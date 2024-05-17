@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
+import {collection} from 'firebase/firestore';
+import {fireStore} from '../firebase'
 
 const StateContext = createContext();
 
@@ -37,6 +39,16 @@ export const ContextProvider = ({ children }) => {
     setActiveMain({ ...initialMain, [main]: true });
   };
 
+  const getCollectionRef = ()=> {
+    console.log("Actually called...");
+    if (!user){
+      console.log("null user");
+      return null;//no user signed in, no reference
+    }
+    console.log("user not null");//making sure that uID is actually populating.
+    return collection(fireStore, "users", user.uid, "notes" );
+  }
+
   return (
     <StateContext.Provider
       value={{
@@ -52,6 +64,7 @@ export const ContextProvider = ({ children }) => {
         activeMain,
         setActiveMain,
         handleMainVisible,
+        getCollectionRef,
       }}
     >
       {children}
